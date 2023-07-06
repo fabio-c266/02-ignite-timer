@@ -32,3 +32,27 @@ export const HeaderContainer = styled.header`
     }
   }
 `
+
+const statusColors = {
+  yellow: 'yellow-500',
+  green: 'green-500',
+  red: 'red-500',
+}
+
+interface StatusProps {
+  statusColor: keyof typeof statusColors
+}
+
+export const Status = styled.span<StatusProps>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: ${(props) => props.theme[statusColors[props.statusColor]]};
+  }
+`
