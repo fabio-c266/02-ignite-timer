@@ -1,17 +1,17 @@
+import { differenceInSeconds } from 'date-fns'
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useEffect,
   useReducer,
   useState,
 } from 'react'
-import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 import {
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
 } from '../reducers/cycles/actions'
-import { differenceInSeconds } from 'date-fns'
+import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 
 interface CreateCycleData {
   task: string
@@ -23,9 +23,8 @@ interface CyclesContextType {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
   amountSecondsPassed: number
-
-  setSecondsPassed: (seconds: number) => void
   markCurrentCycleAsFinished: () => void
+  setSecondsPassed: (seconds: number) => void
   createNewCycle: (data: CreateCycleData) => void
   interruptCurrentCycle: () => void
 }
@@ -46,12 +45,12 @@ export function CyclesContextProvider({
       activeCycleId: null,
     },
     (initialState) => {
-      const storedStateAsJson = localStorage.getItem(
+      const storedStateAsJSON = localStorage.getItem(
         '@ignite-timer:cycles-state-1.0.0',
       )
 
-      if (storedStateAsJson) {
-        return JSON.parse(storedStateAsJson)
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
       }
 
       return initialState
@@ -59,7 +58,6 @@ export function CyclesContextProvider({
   )
 
   const { cycles, activeCycleId } = cyclesState
-
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
@@ -83,11 +81,13 @@ export function CyclesContextProvider({
     dispatch(markCurrentCycleAsFinishedAction())
   }
 
-  function createNewCycle({ task, minutesAmount }: CreateCycleData) {
+  function createNewCycle(data: CreateCycleData) {
+    const id = String(new Date().getTime())
+
     const newCycle: Cycle = {
-      id: String(new Date().getTime()),
-      task,
-      minutesAmount,
+      id,
+      task: data.task,
+      minutesAmount: data.minutesAmount,
       startDate: new Date(),
     }
 
